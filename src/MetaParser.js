@@ -158,4 +158,13 @@ export default class MetaParser {
     _isInList(value, values_list) {
         return values_list.includes(value);
     }
+
+    _isSafeToInsert(pos_line, pos_spc) {
+        for (const posLineElement of pos_line) {
+            if (pos_spc.start >= posLineElement.start && pos_spc.start <= posLineElement.end) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
