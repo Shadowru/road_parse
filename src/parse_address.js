@@ -19,7 +19,8 @@ async function processLineByLine() {
     // ('\r\n') in input.txt as a single line break.
 
     for await (const line of rl) {
-        Logger.debug('Line : ' + line);
+        Logger.debug('===========================');
+        Logger.debug('Data line : ' + line);
         const parsed_addr = metaparser.parse(line);
     }
 }
