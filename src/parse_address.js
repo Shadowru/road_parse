@@ -8,8 +8,9 @@ Logger.useDefaults();
 
 const metaparser = new MetaParser();
 
-async function processLineByLine() {
-    const fileStream = fs.createReadStream('../data/input.txt');
+async function processLineByLine(file) {
+    //const fileStream = fs.createReadStream('../data/input.txt');
+    const fileStream = fs.createReadStream(file);
 
     const rl = readline.createInterface({
         input: fileStream,
@@ -25,4 +26,6 @@ async function processLineByLine() {
     }
 }
 
-processLineByLine();
+//processLineByLine('../data/test.txt');
+processLineByLine('../data/nomn.txt');
+//processLineByLine('../data/input.txt');

@@ -118,9 +118,13 @@ export default class MetaParser {
                         const data = this._cutLine(line, pos_cut);
 
                         places.push(
-                            type + ' ' + data.cut
+                            pos_cut[0].type + ' ' + data.cut
                         )
+
                         mutated_line = data.line;
+
+                        mutated_line = this.cut(mutated_line, pos, pos + prefix.length);
+
                     } else {
                         break;
                     }
@@ -140,7 +144,7 @@ export default class MetaParser {
 
     _simpleFindByType(line, pos, type, delta) {
         for (const dict_element of this._dict.dict) {
-            if (this._isInList(dict_element.type, [type])) {
+            if (this._isInList(dict_element.type, type)) {
                 let start_pos = pos;
 
                 const name = dict_element.name;
@@ -152,8 +156,11 @@ export default class MetaParser {
                 );
 
                 if (pos_spc !== undefined) {
-                    if (pos_spc.start - pos < delta) {
+                    if (pos_spc.start - pos < delta + type.length) {
                         if (this._isEndOfWord(line, pos_spc.end)) {
+
+                            pos_spc.type = dict_element.type;
+
                             return [pos_spc];
                         }
                     }
