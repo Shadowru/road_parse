@@ -51,7 +51,7 @@ export default class MetaParser {
         Logger.debug('Line: ' + places_data.line);
     }
 
-    _cutRegion(line) {
+    _cutRoads(line) {
 
     }
 
