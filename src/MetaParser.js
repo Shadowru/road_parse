@@ -6,7 +6,7 @@ export default class MetaParser {
     constructor() {
         Logger.useDefaults();
 
-        this._delta = 3;
+        this._delta = 2;
         this._dict = this._loadDictionaries();
     }
 
@@ -32,7 +32,13 @@ export default class MetaParser {
     parse(line) {
 
         const region_data = this._cutRegion(line);
+        Logger.debug('After region: ' + region_data.line);
+
+        const roads_data = this._cutRoads(region_data.line);
+
         const division_data = this._cutDivision(region_data.line);
+
+        Logger.debug('After division: ' + division_data.line);
 
         const places_data = this._cutPlace2(division_data.line);
         //const places_data2 = this._cutPlace(places_data.line);
@@ -43,6 +49,10 @@ export default class MetaParser {
         Logger.debug('Places: ' + places_data.places);
         //Logger.debug('Places2: ' + places_data2.places);
         Logger.debug('Line: ' + places_data.line);
+    }
+
+    _cutRegion(line) {
+
     }
 
     _cutRegion(line) {
@@ -57,14 +67,21 @@ export default class MetaParser {
     }
 
     _cutDivision(line) {
-        const pos_cut = this._findByType(line, ['район']);
+        const pos_cut = this._findByType(line, ['район', 'улус (р-н)']);
 
-        const data = this._cutLine(line, pos_cut);
+        if (pos_cut.length > 0) {
+            const data = this._cutLine(line, [pos_cut[pos_cut.length - 1]]);
+
+            return {
+                divisions: data.cut,
+                line: data.line
+            };
+        }
 
         return {
-            divisions: data.cut,
-            line: data.line
-        };
+            divisions: "",
+            line: line
+        }
     }
 
     _cutPlace(line) {
@@ -113,7 +130,7 @@ export default class MetaParser {
 
                     if (pos_cut !== undefined) {
 
-                        pos_cut.start = index_pos;
+                        pos_cut[0].start = index_pos;
 
                         const data = this._cutLine(line, pos_cut);
 
@@ -206,7 +223,7 @@ export default class MetaParser {
 
     _findInLine(line, pos, token) {
         //TODO: morphing
-        const start_idx = line.indexOf(token, pos);
+        const start_idx = line.toLowerCase().indexOf(token.toLowerCase(), pos);
         if (start_idx === -1) {
             return undefined;
         }
