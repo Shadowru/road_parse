@@ -72,5 +72,5 @@ async function processLineByLine(file) {
 } //processLineByLine('../data/test.txt');
 
 
-processLineByLine('../data/nomn.txt'); //processLineByLine('../data/input.txt');
+processLineByLine('./data/nomn.txt'); //processLineByLine('../data/input.txt');
 //# sourceMappingURL=parse_address.js.map

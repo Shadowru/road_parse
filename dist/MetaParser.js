@@ -23,7 +23,7 @@ class MetaParser {
   }
 
   _loadDictionaries() {
-    const dict_raw = _fsExtra2.default.readJsonSync('../data/dict.json');
+    const dict_raw = _fsExtra2.default.readJsonSync('./data/dict.json');
 
     const reverse_dict = {};
 
@@ -34,7 +34,7 @@ class MetaParser {
     return {
       reverse_dict: reverse_dict,
       dict: dict_raw,
-      type_dict: _fsExtra2.default.readJsonSync('../data/matcher.json')
+      type_dict: _fsExtra2.default.readJsonSync('./data/matcher.json')
     };
   }
 

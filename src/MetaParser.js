@@ -13,7 +13,7 @@ export default class MetaParser {
     _loadDictionaries() {
 
         const dict_raw = fs_extra.readJsonSync(
-            '../data/dict.json'
+            './data/dict.json'
         );
 
         const reverse_dict = {};
@@ -25,7 +25,7 @@ export default class MetaParser {
         return {
             reverse_dict: reverse_dict,
             dict: dict_raw,
-            type_dict: fs_extra.readJsonSync('../data/matcher.json')
+            type_dict: fs_extra.readJsonSync('./data/matcher.json')
         };
     }
 
