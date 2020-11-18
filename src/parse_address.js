@@ -2,7 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 import Logger from "js-logger";
 
-import MetaParser from "./MetaParser";
+//import MetaParser from "./MetaParser";
 import MetaParser2 from "./MetaParser2";
 
 Logger.useDefaults();
@@ -38,7 +38,8 @@ function printCSVLine(addr) {
         + addr.road + ";"
         + addr.geo + ";"
         + addr.numbers + ";"
-        + addr.residue
+        + addr.residue + ";"
+        + addr
     );
 }
 
@@ -52,7 +53,7 @@ async function processLineByLine(file) {
     // Note: we use the crlfDelay option to recognize all instances of CR LF
     // ('\r\n') in input.txt as a single line break.
 
-    console.log('Meta;State;Region;Road;Geo;Meters;Residue;');
+    console.log('Meta;State;Region;Road;Geo;Meters;Residue;Line');
 
     for await (const line of rl) {
         //Logger.debug('===========================');

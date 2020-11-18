@@ -4,13 +4,9 @@ var _jsLogger = require("js-logger");
 
 var _jsLogger2 = _interopRequireDefault(_jsLogger);
 
-var _MetaParser = require("./MetaParser");
+var _MetaParser = require("./MetaParser2");
 
 var _MetaParser2 = _interopRequireDefault(_MetaParser);
-
-var _MetaParser3 = require("./MetaParser2");
-
-var _MetaParser4 = _interopRequireDefault(_MetaParser3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20,7 +16,7 @@ const readline = require('readline');
 
 _jsLogger2.default.useDefaults();
 
-const metaparser = new _MetaParser4.default();
+const metaparser = new _MetaParser2.default();
 
 function getMeta(addr) {
   let count = 0;
@@ -50,7 +46,7 @@ function getMeta(addr) {
 
 function printCSVLine(addr) {
   const meta = getMeta(addr);
-  console.log(meta + ";" + addr.state + ";" + addr.region + ";" + addr.road + ";" + addr.geo + ";" + addr.numbers + ";" + addr.residue);
+  console.log(meta + ";" + addr.state + ";" + addr.region + ";" + addr.road + ";" + addr.geo + ";" + addr.numbers + ";" + addr.residue + ";" + addr);
 }
 
 async function processLineByLine(file) {
@@ -61,7 +57,7 @@ async function processLineByLine(file) {
   }); // Note: we use the crlfDelay option to recognize all instances of CR LF
   // ('\r\n') in input.txt as a single line break.
 
-  console.log('Meta;State;Region;Road;Geo;Meters;Residue;');
+  console.log('Meta;State;Region;Road;Geo;Meters;Residue;Line');
 
   for await (const line of rl) {
     //Logger.debug('===========================');
