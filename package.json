@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel  --watch src -d dist --source-maps"
+    "build": "babel --watch src -d dist --source-maps",
+    "parse": "node "
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
@@ -16,9 +17,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@turf/turf": "^5.1.6",
+    "az": "^0.2.3",
     "babel-preset-env": "^1.7.0",
     "csvtojson": "^2.0.10",
     "fs-extra": "^9.0.1",
-    "js-logger": "^1.6.0"
+    "js-logger": "^1.6.0",
+    "mystem3": "^1.2.1",
+    "syntax_analyzer": "0.0.2"
   }
 }

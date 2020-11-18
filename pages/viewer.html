@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.72/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.72/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
+<body>
+<div id="cesiumContainer" style="width: 100%; height:800px"></div>
+<script>
+
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMDM4YWRiNS02NTEwLTQ3M2UtYjhjMi0yYzEwMGQwYmJiZGEiLCJpZCI6MTkxNTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NzUwMjk1NDZ9.q_0fL7JP-pUEKrAxZL_eOlvtqmE9iJAGu7Orz9QwxGc';
+
+    const mapbox = new Cesium.MapboxStyleImageryProvider({
+        username: 'shadowru',
+        styleId: 'ckgehmc7q750z19nwevt7pyqa',
+        accessToken: 'pk.eyJ1Ijoic2hhZG93cnUiLCJhIjoiY2pwaW9kNWwxMTVsNTNrbnZ2dWE4eDBjOCJ9.MhNG1IYrvMaalhuUEYqKYg'
+    });
+
+
+    const viewer = new Cesium.Viewer('cesiumContainer',
+        {
+            imageryProvider: mapbox,
+            sceneMode: Cesium.SceneMode.SCENE2D,
+            mapProjection: new Cesium.WebMercatorProjection(),
+            animation: false,
+            baseLayerPicker: false,
+            geocoder: false,
+            homeButton: false,
+            timeline: false,
+            navigationHelpButton: false,
+            sceneModePicker: false
+        }
+    );
+
+    const orangeColorForMap = new Cesium.Color(1, 0.50, 0.0);
+
+    const geoJSONDataSource = Cesium.GeoJsonDataSource.load('../data/repair.json',
+        {
+            stroke: orangeColorForMap,
+            fill: orangeColorForMap,
+            strokeWidth: 1,
+            markerSymbol: 'R'
+        }
+    );
+
+    geoJSONDataSource.clampToGround = true;
+
+    viewer.dataSources.add(geoJSONDataSource);
+
+    viewer.zoomTo(geoJSONDataSource);
+
+</script>
+</body>
+</html>
