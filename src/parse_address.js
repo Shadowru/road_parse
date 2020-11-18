@@ -64,5 +64,5 @@ async function processLineByLine(file) {
 }
 
 //processLineByLine('../data/test.txt');
-processLineByLine('../data/nomn.txt');
+processLineByLine('./data/nomn.txt');
 //processLineByLine('../data/input.txt');
