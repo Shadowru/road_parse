@@ -54,9 +54,9 @@ class MetaParser2 {
   }
 
   _initDict() {
-    const region_dict = _fsExtra2.default.readJsonSync('../data/dict.json');
+    const region_dict = _fsExtra2.default.readJsonSync('./data/dict.json');
 
-    const roads_dict = _fsExtra2.default.readJsonSync('../data/roads.json');
+    const roads_dict = _fsExtra2.default.readJsonSync('./data/roads.json');
 
     this._dict = {
       region: region_dict,

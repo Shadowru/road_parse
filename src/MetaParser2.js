@@ -43,11 +43,11 @@ export default class MetaParser2 {
 
     _initDict() {
         const region_dict = fs_extra.readJsonSync(
-            '../data/dict.json'
+            './data/dict.json'
         );
 
         const roads_dict = fs_extra.readJsonSync(
-            '../data/roads.json'
+            './data/roads.json'
         );
 
         this._dict = {
