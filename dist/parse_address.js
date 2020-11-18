@@ -44,9 +44,9 @@ function getMeta(addr) {
   return 'PH' + count;
 }
 
-function printCSVLine(addr) {
+function printCSVLine(addr, line) {
   const meta = getMeta(addr);
-  console.log(meta + ";" + addr.state + ";" + addr.region + ";" + addr.road + ";" + addr.geo + ";" + addr.numbers + ";" + addr.residue + ";" + addr);
+  console.log(meta + ";" + addr.state + ";" + addr.region + ";" + addr.road + ";" + addr.geo + ";" + addr.numbers + ";" + addr.residue + ";" + line);
 }
 
 async function processLineByLine(file) {
@@ -63,7 +63,7 @@ async function processLineByLine(file) {
     //Logger.debug('===========================');
     //Logger.debug('Data line : ' + line);
     const parsed_addr = metaparser.parse(line);
-    printCSVLine(parsed_addr);
+    printCSVLine(parsed_addr, line);
   }
 } //processLineByLine('../data/test.txt');
 

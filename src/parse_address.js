@@ -29,7 +29,7 @@ function getMeta(addr) {
     return 'PH' + count;
 }
 
-function printCSVLine(addr) {
+function printCSVLine(addr, line) {
     const meta = getMeta(addr);
     console.log(
         meta + ";"
@@ -39,7 +39,7 @@ function printCSVLine(addr) {
         + addr.geo + ";"
         + addr.numbers + ";"
         + addr.residue + ";"
-        + addr
+        + line
     );
 }
 
@@ -60,7 +60,7 @@ async function processLineByLine(file) {
         //Logger.debug('Data line : ' + line);
         const parsed_addr = metaparser.parse(line);
 
-        printCSVLine(parsed_addr);
+        printCSVLine(parsed_addr, line);
     }
 }
 
