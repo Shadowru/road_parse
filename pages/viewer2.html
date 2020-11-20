@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Extrude polygons for 3D indoor mapping</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .map-overlay {
+            font: bold 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 25%;
+            top: 0;
+            left: 0;
+            padding: 10px;
+        }
+
+        .map-overlay .map-overlay-inner {
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .map-overlay label {
+            display: block;
+            margin: 0 0 10px;
+        }
+
+        .map-overlay input {
+            background-color: transparent;
+            display: inline-block;
+            width: 100%;
+            position: relative;
+            margin: 0;
+            cursor: ew-resize;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<div id="map"></div>
+
+<div class="map-overlay top">
+    <div class="map-overlay-inner">
+        <label>Layer opacity: <span id="slider-value">13%</span></label>
+        <input
+                id="slider"
+                type="range"
+                min="0"
+                max="100"
+                step="0"
+                value="13"
+        />
+    </div>
+</div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhZG93cnUiLCJhIjoiY2pwaW9kNWwxMTVsNTNrbnZ2dWE4eDBjOCJ9.MhNG1IYrvMaalhuUEYqKYg';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [41.754792, 55.835328],
+        zoom: 5,
+        pitch: 40,
+        bearing: 20,
+        antialias: true
+    });
+
+    fetch('../data/repair.json')
+        .then((response) => {
+            return response.json();
+        })
+        .then((geojson) => {
+            console.log(geojson);
+
+
+            var slider = document.getElementById('slider');
+            var sliderValue = document.getElementById('slider-value');
+
+            map.on('load', function () {
+                map.addSource('road', {
+                    'type': 'geojson',
+                    'data': geojson
+                });
+
+                map.addLayer({
+                    'id': 'road-line',
+                    'type': 'line',
+                    'source': 'road',
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                        'line-color': '#c38b1d',
+                        'line-width': 8,
+                        'line-opacity': 0.13
+                    },
+                    'filter': ['==', '$type', 'LineString']
+                });
+
+                map.addLayer({
+                    'id': 'road-start-end',
+                    'type': 'circle',
+                    'source': 'road',
+                    'paint': {
+                        'circle-radius': 3,
+                        'circle-color': '#5160ae'
+                    },
+                    'filter': ['==', '$type', 'Point']
+                });
+
+                slider.addEventListener('input', function (e) {
+// Adjust the layers opacity. layer here is arbitrary - this could
+// be another layer name found in your style or a custom layer
+// added on the fly using `addSource`.
+                    map.setPaintProperty(
+                        'road-line',
+                        'line-opacity',
+                        parseInt(e.target.value, 10) / 100
+                    );
+
+// Value indicator
+                    sliderValue.textContent = e.target.value + '%';
+                });
+                map.on('click', 'circle', function (e) {
+
+                    const description = e.features[0].properties.work;
+                    let center_coord = e.lngLat;
+
+                    new mapboxgl.Popup()
+                        .setLngLat(center_coord)
+                        .setHTML(description)
+                        .addTo(map);
+
+                });
+
+                // When a click event occurs on a feature in the places layer, open a popup at the
+// location of the feature, with description HTML from its properties.
+                map.on('click', 'road-line', function (e) {
+
+                    let descr_len = 120;
+                    if (e.features.length > 5) {
+                        descr_len = 120;
+                    }
+
+                    let descr = '';
+                    let center_coord = e.lngLat;
+
+                    let num = 1;
+
+                    for (const feature of e.features) {
+                        const coordinates = feature.geometry.coordinates.slice(0, 1);
+                        const description = feature.properties.work;
+
+                        //center_coord = coordinates;
+
+                        descr = descr + num + ":" + description.substr(0, descr_len) + '...</br>';
+                        num++;
+                    }
+
+                    new mapboxgl.Popup()
+                        .setLngLat(center_coord)
+                        .setHTML(descr)
+                        .addTo(map);
+                });
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+                map.on('mouseenter', 'places', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+// Change it back to a pointer when it leaves.
+                map.on('mouseleave', 'places', function () {
+                    map.getCanvas().style.cursor = '';
+                });
+
+            });
+        });
+
+
+</script>
+
+</body>
+</html>
