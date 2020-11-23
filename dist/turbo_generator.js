@@ -14,7 +14,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const url = 'mongodb://localhost:27017';
 const url_remote = 'mongodb://localhost:50001';
-const mongo_url = url_remote; // Database Name
+const mongo_url = url; // Database Name
 
 const dbName = 'road-test';
 const metaparser = new _MetaParser2.default();
