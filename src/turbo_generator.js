@@ -45,7 +45,7 @@ async function run_parse() {
         const repair_contract_collection = db.collection("repair_contract_processed");
         insert_collection = db.collection("repair_contract_parsed");
 
-        await insert_collection.drop();
+        //await insert_collection.drop();
 
         const cursor = repair_contract_collection.find();
 

@@ -39,8 +39,8 @@ async function run_parse() {
     console.log("Connected successfully to server");
     const db = client.db(dbName);
     const repair_contract_collection = db.collection("repair_contract_processed");
-    insert_collection = db.collection("repair_contract_parsed");
-    await insert_collection.drop();
+    insert_collection = db.collection("repair_contract_parsed"); //await insert_collection.drop();
+
     const cursor = repair_contract_collection.find();
     await cursor.forEach(proceed_parse);
   } finally {
