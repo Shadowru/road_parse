@@ -5,7 +5,7 @@ import MetaParser2 from "./MetaParser2";
 const url = 'mongodb://localhost:27017';
 const url_remote = 'mongodb://localhost:50001';
 
-const mongo_url = url_remote;
+const mongo_url = url;
 
 // Database Name
 const dbName = 'road-test';
