@@ -34,11 +34,10 @@ class MetaParser2 {
 
     const data2 = this._phase2(data3.line);
 
-    const data4 = this._phase4(data2.line);
+    const data4 = this._phase4(data2.line); //const data5 = this._phase5(data4.line);
 
-    const data5 = this._phase5(data4.line);
 
-    const residue_line = data5.line; // Logger.info('State : ' + data1.value);
+    const residue_line = data4.line; // Logger.info('State : ' + data1.value);
     // Logger.info('Region : ' + data2.value);
     // Logger.info('Road : ' + data3.value);
     // Logger.info('Meters : ' + data4.value);
@@ -48,7 +47,7 @@ class MetaParser2 {
       region: data2.value,
       road: data3.value,
       numbers: data4.value,
-      geo: data5.value,
+      //geo: data5.value,
       residue: residue_line
     };
   }

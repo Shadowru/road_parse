@@ -22,8 +22,8 @@ export default class MetaParser2 {
         const data3 = this._phase3(data1.line);
         const data2 = this._phase2(data3.line);
         const data4 = this._phase4(data2.line);
-        const data5 = this._phase5(data4.line);
-        const residue_line = data5.line;
+        //const data5 = this._phase5(data4.line);
+        const residue_line = data4.line;
 
         // Logger.info('State : ' + data1.value);
         // Logger.info('Region : ' + data2.value);
@@ -35,7 +35,7 @@ export default class MetaParser2 {
             region: data2.value,
             road: data3.value,
             numbers: data4.value,
-            geo: data5.value,
+            //geo: data5.value,
             residue: residue_line
         }
 
