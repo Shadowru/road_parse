@@ -6,7 +6,8 @@
   "scripts": {
     "build": "babel --watch src -d dist --source-maps",
     "parse": "node dist/parse_address.js",
-    "geo": "node dist/road_generate.js"
+    "geo": "node dist/road_generate.js",
+    "turbogeo": "node dist/turbo_generator.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
@@ -27,6 +28,7 @@
     "fs-extra": "^9.0.1",
     "js-logger": "^1.6.0",
     "mystem3": "^1.2.1",
+    "mongodb": "^3.6.2",
     "stream-transform": "^2.0.3",
     "syntax_analyzer": "0.0.2"
   }
