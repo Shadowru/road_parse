@@ -5,7 +5,7 @@ import MetaParser2 from "./MetaParser2";
 const url = 'mongodb://localhost:27017';
 const url_remote = 'mongodb://localhost:50001';
 
-const mongo_url = url;
+const mongo_url = url_remote;
 
 // Database Name
 const dbName = 'road-test';
@@ -18,7 +18,7 @@ let cnt = 0;
 
 async function proceed_parse(doc, collection = insert_collection) {
 
-    const title = doc.nomn_title;
+    const title = doc.nomn_title.replace();
 
     const parsed_addr = metaparser.parse(title);
 
@@ -26,9 +26,9 @@ async function proceed_parse(doc, collection = insert_collection) {
 
     await collection.insertOne(doc);
 
-    if (cnt % 100 === 0) {
+    //if (cnt % 100 === 0) {
         console.log(cnt++);
-    }
+    //}
 
 }
 
@@ -45,11 +45,13 @@ async function run_parse() {
         const repair_contract_collection = db.collection("repair_contract_processed");
         insert_collection = db.collection("repair_contract_parsed");
 
+        await insert_collection.drop();
+
         const cursor = repair_contract_collection.find();
 
         await cursor.forEach(proceed_parse);
     } finally {
-        client.close()
+        await client.close()
     }
 }
 

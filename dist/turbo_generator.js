@@ -14,7 +14,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const url = 'mongodb://localhost:27017';
 const url_remote = 'mongodb://localhost:50001';
-const mongo_url = url; // Database Name
+const mongo_url = url_remote; // Database Name
 
 const dbName = 'road-test';
 const metaparser = new _MetaParser2.default();
@@ -22,14 +22,12 @@ let insert_collection = undefined;
 let cnt = 0;
 
 async function proceed_parse(doc, collection = insert_collection) {
-  const title = doc.nomn_title;
+  const title = doc.nomn_title.replace();
   const parsed_addr = metaparser.parse(title);
   doc.parsed_addr = parsed_addr;
-  await collection.insertOne(doc);
+  await collection.insertOne(doc); //if (cnt % 100 === 0) {
 
-  if (cnt % 100 === 0) {
-    console.log(cnt++);
-  }
+  console.log(cnt++); //}
 }
 
 const client = new _mongodb.MongoClient(mongo_url);
@@ -42,10 +40,11 @@ async function run_parse() {
     const db = client.db(dbName);
     const repair_contract_collection = db.collection("repair_contract_processed");
     insert_collection = db.collection("repair_contract_parsed");
+    await insert_collection.drop();
     const cursor = repair_contract_collection.find();
     await cursor.forEach(proceed_parse);
   } finally {
-    client.close();
+    await client.close();
   }
 }
 
