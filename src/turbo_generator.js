@@ -12,9 +12,12 @@ const dbName = 'road-test';
 
 const metaparser = new MetaParser2();
 
-let insert_collection = undefined
+let insert_collection = undefined;
+
+let cnt = 0;
 
 async function proceed_parse(doc, collection = insert_collection) {
+
     const title = doc.nomn_title;
 
     const parsed_addr = metaparser.parse(title);
@@ -22,6 +25,10 @@ async function proceed_parse(doc, collection = insert_collection) {
     doc.parsed_addr = parsed_addr;
 
     await collection.insertOne(doc);
+
+    if (cnt % 100 === 0) {
+        console.log(cnt++);
+    }
 
 }
 

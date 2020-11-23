@@ -19,12 +19,17 @@ const mongo_url = url; // Database Name
 const dbName = 'road-test';
 const metaparser = new _MetaParser2.default();
 let insert_collection = undefined;
+let cnt = 0;
 
 async function proceed_parse(doc, collection = insert_collection) {
   const title = doc.nomn_title;
   const parsed_addr = metaparser.parse(title);
   doc.parsed_addr = parsed_addr;
   await collection.insertOne(doc);
+
+  if (cnt % 100 === 0) {
+    console.log(cnt++);
+  }
 }
 
 const client = new _mongodb.MongoClient(mongo_url);
