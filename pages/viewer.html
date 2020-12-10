@@ -35,7 +35,9 @@
 
     const orangeColorForMap = new Cesium.Color(1, 0.50, 0.0);
 
-    const geoJSONDataSource = Cesium.GeoJsonDataSource.load('../data/repair.json',
+    const geoJSONDataSource = Cesium.GeoJsonDataSource.load(
+        '../data/admin_level_4.geojson',
+        //'../data/repair.json',
         {
             stroke: orangeColorForMap,
             fill: orangeColorForMap,

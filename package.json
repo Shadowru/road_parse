@@ -7,7 +7,9 @@
     "build": "babel --watch src -d dist --source-maps",
     "parse": "node dist/parse_address.js",
     "geo": "node dist/road_generate.js",
-    "turbogeo": "node dist/turbo_generator.js"
+    "turbogeo": "node dist/turbo_generator.js",
+    "turbomurmansk": "node dist/murmansk_proceed.js",
+    "murmanskroads": "node dist/murmansk_roads.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
