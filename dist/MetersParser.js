@@ -7,27 +7,28 @@ Object.defineProperty(exports, "__esModule", {
 class MetersParser {
   parse(meters) {
     const meter_data = [];
-    const meters_raw = meters.split(',');
     let meter_pair = [];
 
-    for (const meterElement of meters_raw) {
-      if (meterElement.trim().length === 0) {
-        continue;
-      }
+    for (const meterElement of meters) {
+      if (typeof meterElement === 'string' || myVar instanceof String) {
+        if (meterElement.trim().length === 0) {
+          continue;
+        }
 
-      const meter = meterElement.replace('+', '').replace('-', '');
-      const parsed = parseInt(meter, 10);
+        const meter = meterElement.replace('+', '').replace('-', '');
+        const parsed = parseInt(meter, 10);
 
-      if (isNaN(parsed)) {
-        console.log(meter);
-        continue;
-      }
+        if (isNaN(parsed)) {
+          console.log(meter);
+          continue;
+        }
 
-      meter_pair.push(parsed);
+        meter_pair.push(parsed);
 
-      if (meter_pair.length > 1) {
-        meter_data.push(meter_pair);
-        meter_pair = [];
+        if (meter_pair.length > 1) {
+          meter_data.push(meter_pair);
+          meter_pair = [];
+        }
       }
     }
 

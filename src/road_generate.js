@@ -55,7 +55,6 @@ fs.createReadStream('./data/export.csv')
 
         const featureCollection = turf.featureCollection(collection);
 
-
         fs_extra.writeJsonSync('./data/repair.json', featureCollection, {spaces: 4})
 
     });

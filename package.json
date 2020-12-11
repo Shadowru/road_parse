@@ -8,8 +8,11 @@
     "parse": "node dist/parse_address.js",
     "geo": "node dist/road_generate.js",
     "turbogeo": "node dist/turbo_generator.js",
+    "turboroad": "node dist/turbo_road.js",
+    "heatmap": "node dist/heatmap.js",
     "turbomurmansk": "node dist/murmansk_proceed.js",
-    "murmanskroads": "node dist/murmansk_roads.js"
+    "murmanskroads": "node dist/murmansk_roads.js",
+    "intersection": "node dist/intersection.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",

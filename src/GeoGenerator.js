@@ -15,7 +15,25 @@ export default class GeoGenerator {
         this._road_dict = road_dict;
     }
 
-    generateGeoJson(road, parsed_meters, work) {
+    _generateLineProp(data) {
+
+        const contract = data.contract;
+        const contractor = contract.suppliers[0];
+
+        const line_prop = {
+            "name": data.parsed_addr.road,
+            "title": data.title,
+            "date": contract.protocolDate,
+            "link": contract.contractUrl,
+            "contractor": contractor.organizationName + 'КПП : ' + contractor.kpp
+        }
+
+        return line_prop;
+    }
+
+    generateGeoJson(road, parsed_meters, data) {
+
+        const line_prop = this._generateLineProp(data);
 
         const slice_list = [];
 
@@ -23,25 +41,12 @@ export default class GeoGenerator {
 
         if (geoLine !== undefined) {
 
-            const road_linestring = turf.lineString(geoLine, {
-                name: road,
-                work: work
-            });
-
-            const options = {units: 'meters'};
+            const road_linestring = turf.lineString(geoLine, line_prop);
 
             for (const parsedMeter of parsed_meters) {
                 try {
-                    const along_from = turf.along(road_linestring, parsedMeter[0], options);
-                    along_from.properties.name = 'Начало';
-                    along_from.properties.data = work;
-                    const along_to = turf.along(road_linestring, parsedMeter[1], options);
-                    along_to.properties.name = 'Начало';
-                    along_to.properties.data = work;
-
-                    const slice = turf.lineSlice(along_from, along_to, road_linestring);
-
-                    slice_list.push(along_from, along_to, slice);
+                    this._getSliceLine(road_linestring, parsedMeter[0], parsedMeter[1])
+                    slice_list.push(slice);
                 } catch (err) {
                     console.error(parsed_meters);
                 }
@@ -49,6 +54,17 @@ export default class GeoGenerator {
         }
 
         return slice_list;
+    }
+
+    _getSliceLine(road_linestring, start, end) {
+        const options = {units: 'meters'};
+
+        const along_from = turf.along(road_linestring, start, options);
+        const along_to = turf.along(road_linestring, end, options);
+
+        const slice = turf.lineSlice(along_from, along_to, road_linestring);
+
+        return slice;
     }
 
     decodePolyline(str, precision) {
@@ -108,4 +124,5 @@ export default class GeoGenerator {
         }
         return undefined;
     }
+
 }
