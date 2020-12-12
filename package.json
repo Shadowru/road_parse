@@ -12,7 +12,9 @@
     "heatmap": "node dist/heatmap.js",
     "turbomurmansk": "node dist/murmansk_proceed.js",
     "murmanskroads": "node dist/murmansk_roads.js",
-    "intersection": "node dist/intersection.js"
+    "intersection": "node dist/intersection.js",
+    "summator": "node dist/summator.js",
+    "dissect": "node dist/dissect_road.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",

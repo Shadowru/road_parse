@@ -83,7 +83,7 @@
         antialias: true
     });
 
-    fetch('../data/repair_2.json')
+    fetch('../data/parsed_dissected.json')
         .then((response) => {
             return response.json();
         })
@@ -109,9 +109,9 @@
                         'line-cap': 'round'
                     },
                     'paint': {
-                        'line-color': '#c38b1d',
+                        'line-color': ['get', 'color'],
                         'line-width': 8,
-                        'line-opacity': 0.13
+                        'line-opacity': 1
                     },
                     'filter': ['==', '$type', 'LineString']
                 });
@@ -156,24 +156,23 @@
 // location of the feature, with description HTML from its properties.
                 map.on('click', 'road-line', function (e) {
 
-                    let descr_len = 120;
-                    if (e.features.length > 5) {
-                        descr_len = 120;
-                    }
-
                     let descr = '';
                     let center_coord = e.lngLat;
 
                     let num = 1;
 
                     for (const feature of e.features) {
-                        const description = feature.properties.title;
-                        const year = feature.properties.date;
-                        const link = feature.properties.link;
 
-                        descr = descr + num + ":" + year + " : " + description.substr(0, descr_len) + '...</br>';
-                        descr = descr + '<a href=\'' + link + '\'>Link</a></a>' + '</br>';
-                        num++;
+                        for (const contractElement of feature.properties.contract) {
+
+                            const km = feature.properties.km;
+
+                            descr = descr + 'KM : ' + km;
+                            descr = descr + '<a href=\'' + feature.properties.contract.link + '\'>Link</a></a>' + '</br>';
+
+                            num++;
+
+                        }
                     }
 
                     new mapboxgl.Popup()

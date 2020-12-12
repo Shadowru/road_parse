@@ -47,7 +47,7 @@
             width: 100%;
             position: relative;
             margin: 0;
-            cursor: ew-resize;
+            /*cursor: ew-resize;*/
         }
 
     </style>
@@ -59,147 +59,205 @@
 
 <div class="map-overlay top">
     <div class="map-overlay-inner">
-        <label>Layer opacity: <span id="slider-value">13%</span></label>
+        <label>Count: <span id="slider-value">1</span></label>
         <input
                 id="slider"
                 type="range"
                 min="0"
                 max="100"
                 step="0"
-                value="13"
+                value="1"
         />
     </div>
-</div>
+    <div class="map-overlay-inner">
+        <label>Year: <span id="year-value">2015</span></label>
+        <input
+                id="year"
+                type="range"
+                min="2015"
+                max="2019"
+                step="0"
+                value="1"
+        />
+    </div>
+    <div class="map-overlay-inner">
+        <div id="legend" class="legend">
+            <input id="repair_all" type="button" value="Все"/>
+            <input id="repair_repair" type="button" value="Ремонт"/>
+            <input id="repair_soder" type="button" value="Содержание"/>
+            <input id="repair_build" type="button" value="Строительство"/>
+        </div>
+    </div>
+    <div class="map-overlay-inner">
+        <div id="loading" class="legend" style="display: none">
+            Loading ...
+        </div>
+    </div>
 
-<script>
-    mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhZG93cnUiLCJhIjoiY2pwaW9kNWwxMTVsNTNrbnZ2dWE4eDBjOCJ9.MhNG1IYrvMaalhuUEYqKYg';
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [41.754792, 55.835328],
-        zoom: 5,
-        pitch: 40,
-        bearing: 20,
-        antialias: true
-    });
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhZG93cnUiLCJhIjoiY2pwaW9kNWwxMTVsNTNrbnZ2dWE4eDBjOCJ9.MhNG1IYrvMaalhuUEYqKYg';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [41.754792, 55.835328],
+            zoom: 5,
+            pitch: 40,
+            bearing: 20,
+            antialias: true
+        });
 
-    fetch('../data/repair_2.json')
-        .then((response) => {
-            return response.json();
-        })
-        .then((geojson) => {
-            console.log(geojson);
+        let global_year = 2015;
+        let last_url = '../data/repair_all';
 
+        let loading = document.getElementById('loading');
 
-            var slider = document.getElementById('slider');
-            var sliderValue = document.getElementById('slider-value');
+        function loadData(data_url) {
 
-            map.on('load', function () {
-                map.addSource('road', {
-                    'type': 'geojson',
-                    'data': geojson
+            last_url = data_url;
+
+            loading.style.display = 'block';
+
+            fetch(data_url + '_' + global_year + '.json')
+                .then((response) => {
+                    return response.json();
+                })
+                .then((geojson) => {
+                    map.getSource('road').setData(geojson);
+                    loading.style.display = 'none';
                 });
+        }
 
-                map.addLayer({
-                    'id': 'road-line',
-                    'type': 'line',
-                    'source': 'road',
-                    'layout': {
-                        'line-join': 'round',
-                        'line-cap': 'round'
-                    },
-                    'paint': {
-                        'line-color': '#c38b1d',
-                        'line-width': 8,
-                        'line-opacity': 0.13
-                    },
-                    'filter': ['==', '$type', 'LineString']
-                });
+        function loadYear(year_to_load) {
+            global_year = year_to_load;
+            loadData(last_url);
+        }
 
-                map.addLayer({
-                    'id': 'road-start-end',
-                    'type': 'circle',
-                    'source': 'road',
-                    'paint': {
-                        'circle-radius': 3,
-                        'circle-color': '#5160ae'
-                    },
-                    'filter': ['==', '$type', 'Point']
-                });
+        map.on('load', function () {
+            map.addSource('road', {
+                'type': 'geojson',
+                'data': {
+                    "type": "FeatureCollection",
+                    "features": []
+                }
+            });
 
-                slider.addEventListener('input', function (e) {
-// Adjust the layers opacity. layer here is arbitrary - this could
-// be another layer name found in your style or a custom layer
-// added on the fly using `addSource`.
-                    map.setPaintProperty(
-                        'road-line',
-                        'line-opacity',
-                        parseInt(e.target.value, 10) / 100
-                    );
+            map.addLayer({
+                'id': 'road-line',
+                'type': 'line',
+                'source': 'road',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': ['get', 'color'],
+                    'line-width': 8,
+                    'line-opacity': ['get', 'opacity']
+                },
+                'filter': ['==', '$type', 'LineString']
+            });
 
-// Value indicator
-                    sliderValue.textContent = e.target.value + '%';
-                });
+            let slider = document.getElementById('slider');
+            let sliderValue = document.getElementById('slider-value');
 
-                /*
-                map.on('click', 'circle', function (e) {
+            slider.addEventListener('input', function (e) {
 
-                    const description = e.features[0].properties.work;
-                    let center_coord = e.lngLat;
+                const count = parseInt(e.target.value, 10);
+                map.setFilter('road-line', ['>=', ['get', 'contract_count'], count]);
 
-                    new mapboxgl.Popup()
-                        .setLngLat(center_coord)
-                        .setHTML(description)
-                        .addTo(map);
+                sliderValue.textContent = count;
+            });
 
-                });
+            let year_slider = document.getElementById('year');
+            let year_Value = document.getElementById('year-value');
 
-                // When a click event occurs on a feature in the places layer, open a popup at the
-// location of the feature, with description HTML from its properties.
-                map.on('click', 'road-line', function (e) {
+            year_slider.addEventListener('input', function (e) {
 
-                    let descr_len = 120;
-                    if (e.features.length > 5) {
-                        descr_len = 120;
+                const year = parseInt(e.target.value, 10);
+
+                loadYear(year);
+                year_Value.textContent = year;
+            });
+
+            let repair_all = document.getElementById('repair_all');
+            let repair_repair = document.getElementById('repair_repair');
+            let repair_soder = document.getElementById('repair_soder');
+            let repair_build = document.getElementById('repair_build');
+
+            repair_all.addEventListener('click', (e) => {
+                loadData('../data/repair_all');
+            });
+
+            repair_repair.addEventListener('click', (e) => {
+                loadData('../data/repair_repair');
+            });
+
+            repair_soder.addEventListener('click', (e) => {
+                loadData('../data/repair_soder');
+            });
+
+            repair_build.addEventListener('click', (e) => {
+                loadData('../data/repair_build');
+            });
+
+            map.on('click', 'road-line', function (e) {
+
+                let descr_len = 120;
+                if (e.features.length > 5) {
+                    descr_len = 120;
+                }
+
+                let descr = '';
+                let center_coord = e.lngLat;
+
+                let num = 1;
+
+                function getYear(protocolDate) {
+                    if (protocolDate === undefined) {
+                        return "-";
                     }
+                    return Number.parseInt(protocolDate.substring(0, 4));
+                }
 
-                    let descr = '';
-                    let center_coord = e.lngLat;
+                for (const feature of e.features) {
+                    const contracts = JSON.parse(feature.properties.contracts);
+                    for (const contract of contracts) {
 
-                    let num = 1;
+                        const real_contract = contract.contract;
 
-                    for (const feature of e.features) {
-                        const description = feature.properties.title;
-                        const year = feature.properties.date;
-                        const link = feature.properties.link;
+                        const description = real_contract.products[0].name;
+                        const year = getYear(real_contract.protocolDate);
+                        const link = real_contract.contractUrl;
+                        const price = real_contract.price / 1000000 + ' млн.';
 
-                        descr = descr + num + ":" + year + " : " + description.substr(0, descr_len) + '...</br>';
+                        descr = descr + year + "г. : " + price + description.substr(0, descr_len) + '...</br>';
                         descr = descr + '<a href=\'' + link + '\'>Link</a></a>' + '</br>';
                         num++;
                     }
+                }
 
-                    new mapboxgl.Popup()
-                        .setLngLat(center_coord)
-                        .setHTML(descr)
-                        .addTo(map);
-                });
-                 */
+                new mapboxgl.Popup()
+                    .setLngLat(center_coord)
+                    .setHTML(descr)
+                    .addTo(map);
+            });
 
 // Change the cursor to a pointer when the mouse is over the places layer.
-                map.on('mouseenter', 'places', function () {
-                    map.getCanvas().style.cursor = 'pointer';
-                });
+            map.on('mouseenter', 'places', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
 
 // Change it back to a pointer when it leaves.
-                map.on('mouseleave', 'places', function () {
-                    map.getCanvas().style.cursor = '';
-                });
-
+            map.on('mouseleave', 'places', function () {
+                map.getCanvas().style.cursor = '';
             });
+
+            loadYear(global_year);
+
         });
 
 
-</script>
+    </script>
 
 </body>
 </html>
