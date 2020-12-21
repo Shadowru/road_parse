@@ -57,25 +57,25 @@
 
 <div id="map"></div>
 
-<div class="map-overlay top">
-    <div class="map-overlay-inner">
-        <label>Layer opacity: <span id="slider-value">13%</span></label>
-        <input
-                id="slider"
-                type="range"
-                min="0"
-                max="100"
-                step="0"
-                value="13"
-        />
-    </div>
-</div>
+<!--<div class="map-overlay top">-->
+<!--    <div class="map-overlay-inner">-->
+<!--        <label>Layer opacity: <span id="slider-value">13%</span></label>-->
+<!--        <input-->
+<!--                id="slider"-->
+<!--                type="range"-->
+<!--                min="0"-->
+<!--                max="100"-->
+<!--                step="0"-->
+<!--                value="13"-->
+<!--        />-->
+<!--    </div>-->
+<!--</div>-->
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhZG93cnUiLCJhIjoiY2pwaW9kNWwxMTVsNTNrbnZ2dWE4eDBjOCJ9.MhNG1IYrvMaalhuUEYqKYg';
     var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/shadowru/ckgehmc7q750z19nwevt7pyqa',
         center: [41.754792, 55.835328],
         zoom: 5,
         pitch: 40,
@@ -83,7 +83,7 @@
         antialias: true
     });
 
-    fetch('../data/parsed_dissected.json')
+    fetch('../data/pp.json')
         .then((response) => {
             return response.json();
         })
@@ -110,7 +110,7 @@
                     },
                     'paint': {
                         'line-color': ['get', 'color'],
-                        'line-width': 8,
+                        'line-width': 4,
                         'line-opacity': 1
                     },
                     'filter': ['==', '$type', 'LineString']
@@ -127,19 +127,19 @@
                     'filter': ['==', '$type', 'Point']
                 });
 
-                slider.addEventListener('input', function (e) {
-// Adjust the layers opacity. layer here is arbitrary - this could
-// be another layer name found in your style or a custom layer
-// added on the fly using `addSource`.
-                    map.setPaintProperty(
-                        'road-line',
-                        'line-opacity',
-                        parseInt(e.target.value, 10) / 100
-                    );
-
-// Value indicator
-                    sliderValue.textContent = e.target.value + '%';
-                });
+//                 slider.addEventListener('input', function (e) {
+// // Adjust the layers opacity. layer here is arbitrary - this could
+// // be another layer name found in your style or a custom layer
+// // added on the fly using `addSource`.
+//                     map.setPaintProperty(
+//                         'road-line',
+//                         'line-opacity',
+//                         parseInt(e.target.value, 10) / 100
+//                     );
+//
+// // Value indicator
+//                     sliderValue.textContent = e.target.value + '%';
+//                 });
                 map.on('click', 'circle', function (e) {
 
                     const description = e.features[0].properties.work;
@@ -161,18 +161,30 @@
 
                     let num = 1;
 
-                    for (const feature of e.features) {
+                    const feature = e.features[0];
 
-                        for (const contractElement of feature.properties.contract) {
+                    const contracts = JSON.parse(feature.properties.contract);
 
-                            const km = feature.properties.km;
+                    const roadTitle = feature.properties.road_title;
 
-                            descr = descr + 'KM : ' + km;
-                            descr = descr + '<a href=\'' + feature.properties.contract.link + '\'>Link</a></a>' + '</br>';
+                    descr = descr + roadTitle + ' : ';
 
-                            num++;
+                    const start = feature.properties.section_start;
+                    const end = feature.properties.section_end;
 
-                        }
+                    descr = descr + start + ' - ' + end + ' км.</br>';
+
+                    for (const contractElement of contracts) {
+
+                        const link = contractElement.url;
+                        const title = contractElement.title;
+                        const year = contractElement.year;
+
+                        descr = descr + title.substring(0, 140) + ' ... ' + year + ' г.';
+                        descr = descr + '<a href=\'' + link + '\'>Link</a></a>' + '</br>';
+
+                        num++;
+
                     }
 
                     new mapboxgl.Popup()

@@ -69,10 +69,10 @@ class GeoGenerator {
   _getSliceLine(road_linestring, start, end) {
     const options = {
       units: 'meters'
-    };
-    const along_from = turf.along(road_linestring, start, options);
-    const along_to = turf.along(road_linestring, end, options);
-    const slice = turf.lineSlice(along_from, along_to, road_linestring);
+    }; // const along_from = turf.along(road_linestring, start, options);
+    // const along_to = turf.along(road_linestring, end, options);
+
+    const slice = turf.lineSliceAlong(road_linestring, start, end, options);
     return slice;
   }
 

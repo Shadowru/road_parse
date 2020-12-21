@@ -102,14 +102,14 @@ for (const roadElement of contract_map) {
 
     //km_length = Math.min(km_length, 10);
 
-    console.log('km_length : ' + km_length);
+    //console.log('km_length : ' + km_length);
 
     const road_km = [];
 
     for (let km = 0; km < km_length; km++) {
 
         if (km % 100 === 0) {
-            console.log('KM : ' + km);
+            //console.log('KM : ' + km);
         }
 
         // if (km > 1000) {
@@ -147,7 +147,6 @@ for (const roadElement of contract_map) {
 const dissected_roads = new Map();
 
 for (const roadMapElement of road_map) {
-
 
     const featureCollection = turf.featureCollection(roadMapElement[1]);
 
